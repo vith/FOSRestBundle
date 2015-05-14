@@ -166,11 +166,17 @@ abstract class AbstractRequestBodyParamConverter implements ParamConverterInterf
      */
     protected function configureDeserializationContext(DeserializationContext $context, array $options)
     {
-        if (isset($options['groups'])) {
-            $context->setGroups($options['groups']);
-        }
-        if (isset($options['version'])) {
-            $context->setVersion($options['version']);
+        foreach ($options as $optionName => $optionValue) {
+            switch ($optionName) {
+                case 'groups':
+                    $context->setGroups($optionValue);
+                    break;
+                case 'version':
+                    $context->setVersion($optionValue);
+                    break;
+                default:
+                    $context->attributes->set($optionName, $optionValue);
+            }
         }
 
         return $context;
@@ -193,4 +199,3 @@ abstract class AbstractRequestBodyParamConverter implements ParamConverterInterf
         return $resolver->resolve(isset($options['validator']) ? $options['validator'] : array());
     }
 }
-
